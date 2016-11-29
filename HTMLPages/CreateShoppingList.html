@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Create List</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+	<script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+	<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+  <script src="../Javascript/Functions.js"></script>
+</head>
+<body>
+  <div data-role="page" id="CreateShoppingList">
+    <ul data-role="listview" data-filter="true" data-autodividers="true" data-inset="true">
+			<script>
+			$().ready( function(){
+			var shoppingItems = JSON.parse(localStorage.getItem("shoppingItems"));
+			for (let item of shoppingItems) {
+				$( "#CreateShoppingList > ul" ).append( "<li>" + item + "</li>" );
+		}
+	});
+			</script>
+    </ul>
+  </div>
+</body>
+</html>
