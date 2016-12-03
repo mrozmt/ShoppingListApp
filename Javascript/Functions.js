@@ -1,3 +1,33 @@
+var chosenItems = "";
+var CurrentShoppingListArray = [];
+var ShoppingListName = "";
+
+//*******************************create list screen functions*******************
+
+/*
+ * this function adds an object to the CurrentShoppingListArray while also updating
+ * the user interface.
+ */
+function addItem(){
+  var itemName = $("#spinlabel").html();
+  var quantity = $("#spin").val();
+  var itemObj = {Name:itemName, Quantity:quantity};
+  CurrentShoppingListArray.push(itemObj);
+  $.mobile.pageContainer.pagecontainer("change", "CreateShoppingList.html", null);
+}
+
+//changes the page and stores the user's current chosen item to localStorage
+function setChosenItem(chosenItem){
+  localStorage.setItem("chosenItem", chosenItem.text);
+  $.mobile.pageContainer.pagecontainer("change", "choosenitems.html", null);
+}
+
+//retrieve user's chosen item from localStorage
+function getChosenItem(){
+  $("#spinlabel").html(localStorage.getItem("chosenItem"));
+}
+
+//check if shoppingItems array in the localStorage is empty or not
 function isLocalStorageEmpty(){
   if (localStorage.getItem("shoppingItems") == null) {
     return true;
@@ -5,14 +35,42 @@ function isLocalStorageEmpty(){
   return false;
 }
 
+/*
+ * load the shopping items from the localStorage to the list from where the user
+ * can choose the items
+ */
 function loadItemsToList() {
-    console.log(window.document.title);
     var shoppingItems = JSON.parse(localStorage.getItem("shoppingItems"));
     for (let item of shoppingItems) {
       $( "#CreateShoppinglist > ul" ).append( "<li>" + item + "</li>" );
   }
 }
 
+/*
+ * Save the user's list to the localStorage and change page to main menu.
+ */
+function saveList(){
+  var listName = $("#SaveListName").val();
+  localStorage[$("#SaveListName").val()] = JSON.stringify(CurrentShoppingListArray);
+  var testListSaved = JSON.parse(localStorage.getItem($("SaveListName").val()));
+  addNewListName(listName);
+
+  //empty CurrentShoppingListArray
+  CurrentShoppingListArray = [];
+  $.mobile.pageContainer.pagecontainer("change", "../MainMenu.html", null);
+}
+
+//add new list name to array and save to localStorage
+function addNewListName(listName){
+  var tempArr = [];
+  if (localStorage.getItem("ShoppingListsArrayNames") != null) {
+    tempArr = JSON.parse(localStorage.getItem("ShoppingListsArrayNames"));
+  }
+  tempArr.push($("#SaveListName").val());
+  localStorage["ShoppingListsArrayNames"] = JSON.stringify(tempArr);
+}
+
+//initialize the shoppling list from where the user can choose the shopping items.
 function initializeListItems(){
   var shoppingItems = new Array();
   shoppingItems[0] = "Apple";
@@ -61,3 +119,5 @@ function initializeListItems(){
   shoppingItems[43] = "Yogurt";
   localStorage["shoppingItems"] = JSON.stringify(shoppingItems);
 }
+
+//***********************Shopping Lists Screen functions************************
