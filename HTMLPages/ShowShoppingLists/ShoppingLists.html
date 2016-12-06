@@ -1,0 +1,19 @@
+<body>
+  <div data-role="page">
+		<div data-role="main" class="ui-content">
+      <h1><center>Shopping Lists</center></h1>
+      <ul id="ShoppingLists" data-role="listview" data-inset="true">
+      </ul>
+    </div>
+    <script>
+      $().ready(function(){
+        displayShoppingLists();
+      });
+
+      //retrieve list that was clicked on from the listview and store it in a variable
+      $(document).on('click', function(evt) {
+        localStorage.setItem("chosenList", evt.target.text);
+      });
+   </script>
+  </div>
+</body>

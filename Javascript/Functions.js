@@ -57,7 +57,7 @@ function saveList(){
 
   //empty CurrentShoppingListArray
   CurrentShoppingListArray = [];
-  $.mobile.pageContainer.pagecontainer("change", "../MainMenu.html", null);
+  $.mobile.pageContainer.pagecontainer("change", "../../MainMenu.html", null);
 }
 
 //add new list name to array and save to localStorage
@@ -121,3 +121,26 @@ function initializeListItems(){
 }
 
 //***********************Shopping Lists Screen functions************************
+function displayShoppingLists(){
+  var ShoppingLists = JSON.parse(localStorage.getItem("ShoppingListsArrayNames"));
+  if(ShoppingLists != null){
+    for (let item of ShoppingLists) {
+      $("#ShoppingLists").append("<li><a href='ShoppingListItems.html'>" + item + "</a></li>");
+    }
+  }
+  else{
+    $( "#ShoppingLists > ul" ).append("<p style='color:red'>There are currently no Shopping Lists available. "
+    +"Please create a new one first!!!</p>");
+  }
+}
+
+function retrieveShoppingListItems(){
+  var chosenList = localStorage.getItem("chosenList");
+  var shoppingList = JSON.parse(localStorage.getItem(chosenList));
+  $("#ShoppingListItemsHeading").html(chosenList);
+  for (var i =0; i < shoppingList.length; i++){
+    $("#ShoppingListItems").append("<li data-icon='delete'><a href='#'>"
+    + shoppingList[i].Name + "<span class='ui-li-count'>Quantity: "
+    + shoppingList[i].Quantity +"</span></a></li>");
+  }
+}

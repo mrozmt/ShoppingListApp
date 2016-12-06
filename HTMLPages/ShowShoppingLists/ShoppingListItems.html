@@ -1,0 +1,15 @@
+<body>
+  <div data-role="page">
+		<div data-role="main" class="ui-content">
+      <center><h1 id="ShoppingListItemsHeading"></h1></center>
+      <ul id="ShoppingListItems" data-role="listview" data-inset="true">
+      </ul>
+      <center><h1 id="BoughtItems">Bought Items</h1></center>
+    </div>
+    <script>
+    $().ready(function(){
+      retrieveShoppingListItems();
+    });
+   </script>
+  </div>
+</body>
