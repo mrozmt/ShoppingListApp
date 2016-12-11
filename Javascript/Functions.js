@@ -1,18 +1,22 @@
 var chosenItems = "";
 var CurrentShoppingListArray = [];
 var ShoppingListName = "";
+function Item(name, quantity) {
+  this.name = name;
+  this.quantity = quantity;
+}
 
 //*******************************create list screen functions*******************
 
 /*
- * this function adds an object to the CurrentShoppingListArray while also updating
- * the user interface.
- */
+* this function adds an object to the CurrentShoppingListArray while also updating
+* the user interface.
+*/
 function addItem(){
   var itemName = $("#spinlabel").html();
   var quantity = $("#spin").val();
-  var itemObj = {Name:itemName, Quantity:quantity};
-  CurrentShoppingListArray.push(itemObj);
+  var tempItem = new Item(itemName, quantity);
+  CurrentShoppingListArray.push(tempItem);
   $.mobile.pageContainer.pagecontainer("change", "CreateShoppingList.html", null);
 }
 
@@ -36,23 +40,24 @@ function isLocalStorageEmpty(){
 }
 
 /*
- * load the shopping items from the localStorage to the list from where the user
- * can choose the items
- */
+* load the shopping items from the localStorage to the list from where the user
+* can choose the items
+*/
 function loadItemsToList() {
-    var shoppingItems = JSON.parse(localStorage.getItem("shoppingItems"));
-    for (let item of shoppingItems) {
-      $( "#CreateShoppinglist > ul" ).append( "<li>" + item + "</li>" );
+  var shoppingItems = JSON.parse(localStorage.getItem("shoppingItems"));
+  for (let item of shoppingItems) {
+    $( "#CreateShoppinglist > ul" ).append( "<li>" + item + "</li>" );
   }
 }
 
 /*
- * Save the user's list to the localStorage and change page to main menu.
- */
+* Save the user's list to the localStorage and change page to main menu.
+*/
 function saveList(){
   var listName = $("#SaveListName").val();
+  var boughtListName = listName + " Bought Items";
   localStorage[$("#SaveListName").val()] = JSON.stringify(CurrentShoppingListArray);
-  var testListSaved = JSON.parse(localStorage.getItem($("SaveListName").val()));
+  //var testListSaved = JSON.parse(localStorage.getItem($("SaveListName").val()));
   addNewListName(listName);
 
   //empty CurrentShoppingListArray
@@ -61,13 +66,23 @@ function saveList(){
 }
 
 //add new list name to array and save to localStorage
-function addNewListName(listName){
+function addNewListName(){
   var tempArr = [];
   if (localStorage.getItem("ShoppingListsArrayNames") != null) {
     tempArr = JSON.parse(localStorage.getItem("ShoppingListsArrayNames"));
   }
   tempArr.push($("#SaveListName").val());
   localStorage["ShoppingListsArrayNames"] = JSON.stringify(tempArr);
+}
+
+//add new Bought list name to array and save to localStorage
+function addNewBoughtListName(boughtListName){
+  var tempArr = [];
+  if (localStorage.getItem("BoughtShoppingListsArrayNames") != null) {
+    tempArr = JSON.parse(localStorage.getItem("BoughtShoppingListsArrayNames"));
+  }
+  tempArr.push(boughtListName);
+  localStorage["BoughtShoppingListsArrayNames"] = JSON.stringify(tempArr);
 }
 
 //initialize the shoppling list from where the user can choose the shopping items.
@@ -137,10 +152,69 @@ function displayShoppingLists(){
 function retrieveShoppingListItems(){
   var chosenList = localStorage.getItem("chosenList");
   var shoppingList = JSON.parse(localStorage.getItem(chosenList));
+  shoppingList = convertObjArrayToItemArray(shoppingList);
   $("#ShoppingListItemsHeading").html(chosenList);
-  for (var i =0; i < shoppingList.length; i++){
-    $("#ShoppingListItems").append("<li data-icon='delete'><a href='#'>"
-    + shoppingList[i].Name + "<span class='ui-li-count'>Quantity: "
-    + shoppingList[i].Quantity +"</span></a></li>");
+  for (var i = 0; i < shoppingList.length; i++){
+    $("#ShoppingListItems").append("<li data-icon='delete'><a href='BoughtItems.html'>"
+    + shoppingList[i].name + "  <span class='ui-li-count'>Quantity: "
+    + shoppingList[i].quantity +"</span></a></li>");
+  }
+}
+
+/*
+ * when the array is retrieved from localStorage, the objects in it are retrieved
+ * as normal objects. This function converts every object back to the custom type
+ * item.
+ */
+function convertObjArrayToItemArray(objArray){
+  var tempItem = null;
+  var tempItemList = [];
+  for (var i = 0; i < objArray.length; i++){
+    var tempItem = new Item(objArray[i].name, objArray[i].quantity);
+    tempItemList.push(tempItem);
+  }
+  return tempItemList;
+}
+
+function boughtItem(BoughtItem, boughtListName){
+  var boughtList = localStorage.getItem(boughtListName);
+  if(boughtList == null){
+    boughtList = [];
+  }
+  else{
+    boughtList = JSON.parse(boughtList);
+    boughtList = convertObjArrayToItemArray(boughtList);
+  }
+  var chosenList = localStorage.getItem("chosenList");
+  var shoppingList = localStorage.getItem(chosenList);
+  if(shoppingList != null){
+    shoppingList = JSON.parse(shoppingList);
+    shoppingList = convertObjArrayToItemArray(shoppingList);
+  }
+  for (var i = 0; i < shoppingList.length; i++){
+    if(BoughtItem[0] == shoppingList[i].name){
+      var tempBoughtItem = shoppingList[i];
+      shoppingList.splice(i, 1);
+      boughtList.push(tempBoughtItem);
+    }
+  }
+  addNewBoughtListName(chosenList + " Bought Items");
+  localStorage.setItem(boughtListName, JSON.stringify(boughtList));
+  localStorage.setItem(chosenList, JSON.stringify(shoppingList));
+}
+
+function retrieveBoughtShoppingListItems(){
+  //var boughtListName = localStorage.getItem("boughtItemsListName");
+  var boughtListName = localStorage.getItem("boughtListName");
+  $("#BoughtItems").html(boughtListName);
+  var boughtList = localStorage.getItem(boughtListName);
+  if(boughtList != null){
+    console.log(boughtList);
+    boughtList = JSON.parse(boughtList);
+    for (var i =0; i < boughtList.length; i++){
+      $("#BoughtItemsList").append("<li data-icon='delete'><a href='ShoppingListItems.html'>"
+      + boughtList[i].name + "<span class='ui-li-count'>Quantity: "
+      + boughtList[i].quantity +"</span></a></li>");
+    }
   }
 }

@@ -1,19 +1,32 @@
 <body>
-  <div data-role="page">
-		<div data-role="main" class="ui-content">
+  <div data-role="page" id="ShoppingListsPage">
+    <div data-role="main" class="ui-content">
       <h1><center>Shopping Lists</center></h1>
+      <!--  <div class="ui-grid-a">
+      <div class="ui-block-a"> -->
+      <a href="#popupDialog" data-rel="popup" data-position-to="window" data-transition="pop" class="ui-btn ui-corner-all ui-shadow ui-btn-a">Back</a>
+      <div data-role="popup" id="popupDialog" data-dismissible="false" style="max-width:400px;">
+        <div data-role="header" data-theme="a">
+          <h1>Back</h1>
+        </div>
+        <div class="ui-content">
+          <h4 class="ui-title">Are you sure you want to go back?</h4>
+          <a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline" data-rel="back">Cancel</a>
+          <a href="../../MainMenu.html" class="ui-btn ui-corner-all ui-shadow ui-btn-inline" data-transition="flow">Back</a>
+        </div>
+      </div>
       <ul id="ShoppingLists" data-role="listview" data-inset="true">
       </ul>
     </div>
     <script>
-      $().ready(function(){
-        displayShoppingLists();
-      });
+    $().ready( function(){
+      displayShoppingLists();
+    });
 
-      //retrieve list that was clicked on from the listview and store it in a variable
-      $(document).on('click', function(evt) {
-        localStorage.setItem("chosenList", evt.target.text);
-      });
-   </script>
+    //retrieve list that was clicked on from the listview and store it in a variable
+    $("li").on('click', function(evt) {
+      localStorage.setItem("chosenList", evt.target.text);
+    });
+    </script>
   </div>
 </body>

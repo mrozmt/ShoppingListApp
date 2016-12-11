@@ -12,7 +12,7 @@
                    <h3 class="ui-title">Are you sure you want to go back?</h3>
                    <p>This list will be erased.</p>
                    <a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline" data-rel="back">Cancel</a>
-                   <a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline" onclick="goBack()" data-transition="flow">Back</a>
+                   <a href="../../MainMenu.html" class="ui-btn ui-corner-all ui-shadow ui-btn-inline" onclick="goBack()" data-transition="flow">Back</a>
                  </div>
                </div>
              </div>
@@ -51,28 +51,27 @@
 							</div>
 		       </div>
 				 </div>
-    <ul data-role="listview" data-filter="true" data-autodividers="true" data-inset="true">
-    </ul>
+         <ul data-role="listview" data-filter="true" data-autodividers="true" data-inset="true">
+         </ul>
 		<script>
 		function goBack(){
       CurrentShoppingListArray = [];
-			$.mobile.pageContainer.pagecontainer("change", "../../MainMenu.html", null);
 		}
 
 		$().ready( function(){
 			var shoppingItems = JSON.parse(localStorage.getItem("shoppingItems"));
 			for (let item of shoppingItems) {
-				$( "#CreateShoppingList > ul" ).append("<li><a onclick='setChosenItem(this)'>" + item + "</a></li>");
+				$("#CreateShoppingList > ul").append("<li><a onclick='setChosenItem(this)'>" + item + "</a></li>");
 			}
 		});
 
-    $().ready( function(){
+		$().ready( function(){
       for (let item of CurrentShoppingListArray) {
  		 	$( "#ListPopup > .ui-grid-a" ).append("" +
  			"<div class='ui-block-a'><div class='ui-bar ui-bar-a'style='padding: 0px'><center><p><b>"
-      + item.Name + "</b></p></center></div></div>" +
+      + item.name + "</b></p></center></div></div>" +
  			"<div class='ui-block-b'><div class='ui-bar ui-bar-a'style='padding: 0px'><center><p>"
-      + item.Quantity + "</p></center></div></div>");
+      + item.quantity + "</p></center></div></div>");
  		 }
     });
 		</script>

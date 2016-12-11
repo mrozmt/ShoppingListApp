@@ -28,17 +28,17 @@
 		 $.mobile.pageContainer.pagecontainer("change", "CreateShoppingList.html", null);
 	 }
 
-	 $(document).on("pagebeforeshow",function(event){
+		$().ready( function(){
 		 getChosenItem();
 	 });
 
-	 $().ready(function(){
+		$().ready( function(){
 		 for (let item of CurrentShoppingListArray) {
-		 	$( "#CurrentShoppingList > .ui-grid-a" ).append("" +
+		 	$("#CurrentShoppingList > .ui-grid-a").append("" +
 			"<div class='ui-block-a'><div class='ui-bar ui-bar-a'style='padding: 0px'><center><p><b>"
-      + item.Name + "</b></p></center></div></div>" +
+      + item.name + "</b></p></center></div></div>" +
 			"<div class='ui-block-b'><div class='ui-bar ui-bar-a'style='padding: 0px'><center><p>"
-      + item.Quantity + "</p></center></div></div>");
+      + item.quantity + "</p></center></div></div>");
 		 }
 	 });
 	 </script>
