@@ -17,13 +17,12 @@ function addItem(){
   var quantity = $("#spin").val();
   var tempItem = new Item(itemName, quantity);
   CurrentShoppingListArray.push(tempItem);
-  $.mobile.pageContainer.pagecontainer("change", "CreateShoppingList.html", null);
 }
 
 //changes the page and stores the user's current chosen item to localStorage
 function setChosenItem(chosenItem){
   localStorage.setItem("chosenItem", chosenItem.text);
-  $.mobile.pageContainer.pagecontainer("change", "choosenitems.html", null);
+  $.mobile.pageContainer.pagecontainer("change", "choosenitems.html", {transition: 'slide'});
 }
 
 //retrieve user's chosen item from localStorage
@@ -55,9 +54,7 @@ function loadItemsToList() {
 */
 function saveList(){
   var listName = $("#SaveListName").val();
-  var boughtListName = listName + " Bought Items";
   localStorage[$("#SaveListName").val()] = JSON.stringify(CurrentShoppingListArray);
-  //var testListSaved = JSON.parse(localStorage.getItem($("SaveListName").val()));
   addNewListName(listName);
 
   //empty CurrentShoppingListArray
@@ -75,15 +72,6 @@ function addNewListName(){
   localStorage["ShoppingListsArrayNames"] = JSON.stringify(tempArr);
 }
 
-//add new Bought list name to array and save to localStorage
-function addNewBoughtListName(boughtListName){
-  var tempArr = [];
-  if (localStorage.getItem("BoughtShoppingListsArrayNames") != null) {
-    tempArr = JSON.parse(localStorage.getItem("BoughtShoppingListsArrayNames"));
-  }
-  tempArr.push(boughtListName);
-  localStorage["BoughtShoppingListsArrayNames"] = JSON.stringify(tempArr);
-}
 
 //initialize the shoppling list from where the user can choose the shopping items.
 function initializeListItems(){
@@ -136,36 +124,48 @@ function initializeListItems(){
 }
 
 //***********************Shopping Lists Screen functions************************
+/*
+* retrieve all shopping list names from local storage and display them
+*/
 function displayShoppingLists(){
   var ShoppingLists = JSON.parse(localStorage.getItem("ShoppingListsArrayNames"));
-  if(ShoppingLists != null){
+  if(ShoppingLists.length > 0){
     for (let item of ShoppingLists) {
-      $("#ShoppingLists").append("<li><a href='ShoppingListItems.html'>" + item + "</a></li>");
+      $("#ShoppingLists").append("<li><a href='ShoppingListItems.html' data-transition='slide'>"
+      + item + "</a></li>");
+    }
+  }
+  else {
+    $( "#ShoppingLists" ).append("<center><li style='color:red'>There are currently" +
+    " no shopping lists.<li></center>");
+  }
+}
+/*
+* retrieve shopping list items and display them to the user
+*/
+function retrieveShoppingListItems(){
+  var chosenList = localStorage.getItem("chosenList");
+  $("#ShoppingListItemsHeading").html(chosenList);
+  var shoppingList = JSON.parse(localStorage.getItem(chosenList));
+  if (shoppingList.length > 0){
+    shoppingList = convertObjArrayToItemArray(shoppingList);
+    for (var i = 0; i < shoppingList.length; i++){
+      $("#ShoppingListItems").append("<li data-icon='delete'><a href='#'>"
+      + shoppingList[i].name + "  <span class='ui-li-count'>Quantity: "
+      + shoppingList[i].quantity +"</span></a></li>");
     }
   }
   else{
-    $( "#ShoppingLists > ul" ).append("<p style='color:red'>There are currently no Shopping Lists available. "
-    +"Please create a new one first!!!</p>");
-  }
-}
-
-function retrieveShoppingListItems(){
-  var chosenList = localStorage.getItem("chosenList");
-  var shoppingList = JSON.parse(localStorage.getItem(chosenList));
-  shoppingList = convertObjArrayToItemArray(shoppingList);
-  $("#ShoppingListItemsHeading").html(chosenList);
-  for (var i = 0; i < shoppingList.length; i++){
-    $("#ShoppingListItems").append("<li data-icon='delete'><a href='BoughtItems.html'>"
-    + shoppingList[i].name + "  <span class='ui-li-count'>Quantity: "
-    + shoppingList[i].quantity +"</span></a></li>");
+    $("#ShoppingListItems").append("<center><li style='color:red'>There are currently" +
+    " no items to buy.<li></center>");
   }
 }
 
 /*
- * when the array is retrieved from localStorage, the objects in it are retrieved
- * as normal objects. This function converts every object back to the custom type
- * item.
- */
+* when the array is retrieved from localStorage, the objects in it are retrieved
+* as normal objects. This function converts every object back to the custom type
+* item.
+*/
 function convertObjArrayToItemArray(objArray){
   var tempItem = null;
   var tempItemList = [];
@@ -176,8 +176,14 @@ function convertObjArrayToItemArray(objArray){
   return tempItemList;
 }
 
-function boughtItem(BoughtItem, boughtListName){
-  var boughtList = localStorage.getItem(boughtListName);
+/*
+* retrieve the shopping and bought items lists from the local storage,
+* compare the clicked item with the shopping list and remove it from that
+* list and add it to the bought items list
+*/
+function boughtItem(BoughtItem){
+  var chosenBoughtList = localStorage.getItem("chosenBoughtList");
+  var boughtList = localStorage.getItem(chosenBoughtList);
   if(boughtList == null){
     boughtList = [];
   }
@@ -198,22 +204,53 @@ function boughtItem(BoughtItem, boughtListName){
       boughtList.push(tempBoughtItem);
     }
   }
-  addNewBoughtListName(chosenList + " Bought Items");
-  localStorage.setItem(boughtListName, JSON.stringify(boughtList));
+  localStorage.setItem(chosenBoughtList, JSON.stringify(boughtList));
   localStorage.setItem(chosenList, JSON.stringify(shoppingList));
 }
 
+/*
+* retrieve the shopping and bought items lists from the local storage,
+* compare the clicked item with the bought items list and remove it from that
+* list and add it back to the shopping items list
+*/
+function untickItem(UntickItem){
+  var chosenBoughtList = localStorage.getItem("chosenBoughtList");
+  var boughtList = localStorage.getItem(chosenBoughtList);
+  if(boughtList == null){
+    boughtList = [];
+  }
+  else{
+    boughtList = JSON.parse(boughtList);
+    boughtList = convertObjArrayToItemArray(boughtList);
+  }
+  var chosenList = localStorage.getItem("chosenList");
+  var shoppingList = localStorage.getItem(chosenList);
+  if(shoppingList != null){
+    shoppingList = JSON.parse(shoppingList);
+    shoppingList = convertObjArrayToItemArray(shoppingList);
+  }
+  for (var i = 0; i < boughtList.length; i++){
+    if(UntickItem[0] == boughtList[i].name){
+      var tempUntickItem = boughtList[i];
+      boughtList.splice(i, 1);
+      shoppingList.push(tempUntickItem);
+    }
+  }
+  localStorage.setItem(chosenBoughtList, JSON.stringify(boughtList));
+  localStorage.setItem(chosenList, JSON.stringify(shoppingList));
+}
+
+/*
+* retrieve the bought items list and display it to the user.
+*/
 function retrieveBoughtShoppingListItems(){
-  //var boughtListName = localStorage.getItem("boughtItemsListName");
-  var boughtListName = localStorage.getItem("boughtListName");
-  $("#BoughtItems").html(boughtListName);
-  var boughtList = localStorage.getItem(boughtListName);
+  var chosenBoughtList = localStorage.getItem("chosenBoughtList");
+  var boughtList = localStorage.getItem(chosenBoughtList);
   if(boughtList != null){
-    console.log(boughtList);
     boughtList = JSON.parse(boughtList);
     for (var i =0; i < boughtList.length; i++){
-      $("#BoughtItemsList").append("<li data-icon='delete'><a href='ShoppingListItems.html'>"
-      + boughtList[i].name + "<span class='ui-li-count'>Quantity: "
+      $("#BoughtItemsList").append("<li data-icon='delete'><a href='#'>"
+      + boughtList[i].name + "  <span class='ui-li-count'>Quantity: "
       + boughtList[i].quantity +"</span></a></li>");
     }
   }

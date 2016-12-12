@@ -1,79 +1,96 @@
 <body>
-  <div data-role="page" id="CreateShoppingList">
-		<div data-role="main" class="ui-content">
-		       <div class="ui-grid-b">
-		         <div class="ui-block-a">
-               <a href="#popupDialog" data-rel="popup" data-position-to="window" data-transition="pop" class="ui-btn ui-corner-all ui-shadow ui-btn-a">Back</a>
-               <div data-role="popup" id="popupDialog" data-dismissible="false" style="max-width:400px;">
-                 <div data-role="header" data-theme="a">
-                   <h1>Back</h1>
-                 </div>
-                 <div role="main" class="ui-content">
-                   <h3 class="ui-title">Are you sure you want to go back?</h3>
-                   <p>This list will be erased.</p>
-                   <a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline" data-rel="back">Cancel</a>
-                   <a href="../../MainMenu.html" class="ui-btn ui-corner-all ui-shadow ui-btn-inline" onclick="goBack()" data-transition="flow">Back</a>
-                 </div>
-               </div>
-             </div>
-						 <div class="ui-block-b">
-							 <a href="#popupPadded" data-rel="popup"
-               class="ui-btn ui-corner-all ui-shadow">List</a>
-							 <div data-role="popup" id="popupPadded" class="ui-content">
-                 <a href="#" data-rel="back"
-                 class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
-                 <div class="ui-content" id="ListPopup">
-                   <div class="ui-grid-a" style="width:250px;">
-                    <div class="ui-block-a"><div class="ui-bar ui-bar-b"
-                      style="height:20px"><center><h3>Name</h3></center></div></div>
-               			<div class="ui-block-b"><div class="ui-bar ui-bar-b"
-                      style="height:20px"><center><h3>Quantity</h3></center></div></div>
-                   </div>
-               </div>
-							 </div>
-						 </div>
-						 <div class="ui-block-c">
-						 <a href="#popupLogin" data-rel="popup" data-position-to="window"
-             class="ui-btn ui-corner-all ui-shadow ui-icon-check ui-btn-a" data-transition="pop">Save</a>
-							<div data-role="popup" id="popupLogin" data-theme="a" class="ui-corner-all">
-								<a href="#" data-rel="back"
-                class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
-							    <form>
-							        <div style="padding:10px 20px;">
-							            <label for="title">Name for this list:</label>
-							            <input type="text" id="SaveListName" name="user"
-                          value="" placeholder="List Name" data-theme="a">
-                          <input type="button" onclick="saveList();"
-                          value="Save" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-btn-icon-left ui-icon-check">
-							        </div>
-							    </form>
-								</div>
-							</div>
-		       </div>
-				 </div>
-         <ul data-role="listview" data-filter="true" data-autodividers="true" data-inset="true">
-         </ul>
-		<script>
-		function goBack(){
-      CurrentShoppingListArray = [];
-		}
+  <div data-role="page">
+    <div data-role="header">
+      <a href="#popupDialog" data-rel="popup" data-position-to="window" data-transition="pop" class="ui-btn ui-corner-all  ui-btn-a">Back</a>
+      <div data-role="popup" id="popupDialog" data-dismissible="false" style="max-width:400px;">
+        <div data-role="header" data-theme="a">
+          <h1>Back</h1>
+        </div>
+        <div role="main" class="ui-content">
+          <h4 class="ui-title">Are you sure you want to go back?</h4>
+          <p>This list will be erased.</p>
+          <div class="ui-grid-a">
+            <div class="ui-block-a">
+              <a href="../../MainMenu.html" class="ui-btn ui-corner-all" onclick="clearArray()" data-transition="slide">Back</a>
+            </div>
+            <div class="ui-block-b">
+              <a href="#" class="ui-btn ui-corner-all" data-rel="back">Cancel</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h1>Choose Items</h1>
+      <a href="#popupLogin" data-rel="popup" data-position-to="window"
+      class="ui-btn ui-corner-all ui-icon-check ui-btn-a" data-transition="pop">Save</a>
+      <div data-role="popup" id="popupLogin" data-theme="a" class="ui-corner-all">
+        <a href="#" data-rel="back"
+        class="ui-btn ui-corner-all ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
+        <form>
+          <div style="padding:10px 20px;">
+            <center>
+            <label for="title">Name for this list:</label>
+            <input type="text" id="SaveListName" name="user"
+            value="" placeholder="List Name" data-theme="a">
+            <input type="button" onclick="saveList();"
+            value="Save" class="ui-btn ui-corner-all ui-btn-a ui-btn-icon-left ui-icon-check">
+            </center>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div data-role="main" class="ui-content" id="CreateShoppingList">
+      <ul data-role="listview" data-filter="true" data-autodividers="true" data-inset="true">
+      </ul>
+    </div>
+    <div data-role="footer" data-position="fixed">
+      <center>
+        <a href="#popupPadded" data-rel="popup"
+        class="ui-btn ui-corner-all ui-btn-inline" data-position-to="window">Show Current List</a>
+      </center>
+      <div data-role="popup" id="popupPadded" class="ui-content">
+        <a href="#" data-rel="back"
+        class="ui-btn ui-corner-all ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
+        <div class="ui-content" id="ListPopup">
+          <div class="ui-grid-a" style="width:250px;">
+            <div class="ui-block-a"><div class="ui-bar ui-bar-b"
+              style="height:20px"><center><h3>Name</h3></center></div></div>
+              <div class="ui-block-b"><div class="ui-bar ui-bar-b"
+                style="height:20px"><center><h3>Quantity</h3></center></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <script>
+        //clear array when user leaves the page so that next time a new list is
+        //being created it is already empty
+        function clearArray(){
+          CurrentShoppingListArray = [];
+        }
 
-		$().ready( function(){
-			var shoppingItems = JSON.parse(localStorage.getItem("shoppingItems"));
-			for (let item of shoppingItems) {
-				$("#CreateShoppingList > ul").append("<li><a onclick='setChosenItem(this)'>" + item + "</a></li>");
-			}
-		});
+        /*
+        * When document loads retrieve all the shopping items from which the user
+        * can choose, and display them
+        */
+        $().ready( function(){
+          var shoppingItems = JSON.parse(localStorage.getItem("shoppingItems"));
+          for (let item of shoppingItems) {
+            $("#CreateShoppingList > ul").append("<li><a onclick='setChosenItem(this)'>" + item + "</a></li>");
+          }
+        });
 
-		$().ready( function(){
-      for (let item of CurrentShoppingListArray) {
- 		 	$( "#ListPopup > .ui-grid-a" ).append("" +
- 			"<div class='ui-block-a'><div class='ui-bar ui-bar-a'style='padding: 0px'><center><p><b>"
-      + item.name + "</b></p></center></div></div>" +
- 			"<div class='ui-block-b'><div class='ui-bar ui-bar-a'style='padding: 0px'><center><p>"
-      + item.quantity + "</p></center></div></div>");
- 		 }
-    });
-		</script>
-  </div>
-</body>
+        /*
+        * when document loads, load all the items the user has chosen and display
+        * them in the popup.
+        */
+        $().ready( function(){
+          for (let item of CurrentShoppingListArray) {
+            $( "#ListPopup > .ui-grid-a" ).append("" +
+            "<div class='ui-block-a'><div class='ui-bar ui-bar-a'style='padding: 0px'><center><p><b>"
+            + item.name + "</b></p></center></div></div>" +
+            "<div class='ui-block-b'><div class='ui-bar ui-bar-a'style='padding: 0px'><center><p>"
+            + item.quantity + "</p></center></div></div>");
+          }
+        });
+        </script>
+      </div>
+    </body>

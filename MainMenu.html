@@ -10,6 +10,7 @@
 	<script src="Javascript/Functions.js"></script>
 </head>
 <script>
+//load items from local storage
 if(isLocalStorageEmpty() == true){
 	initializeListItems();
 }
@@ -19,10 +20,10 @@ if(isLocalStorageEmpty() == true){
     <div data-role="main" class="ui-content">
       <h1 style="text-align:center">Shopping Lists</h1>
       <ul data-role="listview" data-inset="true">
-        <li><a href="HTMLPages/CreateNewList/CreateShoppingList.html">Create a Shopping List</a></li>
-        <li><a href="HTMLPages/ShowShoppingLists/ShoppingLists.html">Shopping Lists</a></li>
-        <li><a href="#">Report</a></li>
-        <li><a href="#">Help</a></li>
+        <li><a href="HTMLPages/CreateNewList/CreateShoppingList.html" data-transition="slide">Create a Shopping List</a></li>
+        <li><a href="HTMLPages/ShowShoppingLists/ShoppingLists.html" data-transition="slide">Shopping Lists</a></li>
+        <li><a href="#" data-transition="slide">Report</a></li>
+        <li><a href="#" data-transition="slide">Help</a></li>
       </ul>
     </div>
   </div>

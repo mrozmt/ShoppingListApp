@@ -1,46 +1,44 @@
-<body >
+<body>
   <div data-role="page" id="ChooseItems">
+    <div data-role="header">
+      <a href="CreateShoppingList.html" class="ui-btn ui-corner-all ui-shadow"
+        data-transition="slide">Back</a>
+      <h1>Quantity Wanted</h1>
+      <a href="CreateShoppingList.html" onclick="addItem()"
+        class="ui-btn ui-corner-all ui-shadow" data-transition="slide">Add Item</a>
+    </div>
     <div data-role="main" class="ui-content">
-      <h2 class="center">Quantity Wanted</h2>
       <div class="center ui-field-contain">
-        <label id="spinlabel" for="spin"></label>
+        <center><label id="spinlabel" for="spin"></label>
         <input type="text" data-role="spinbox" name="spin" id="spin"
-          data-options='{"type":"vertical"}' value="1" min="1" max="20" />
-     </div>
-     <div class="ui-content">
-       <div class="ui-grid-a">
-         <div class="ui-block-a"><input type="button" onclick="goBack();"
-          value="Back"></div>
-         <div class="ui-block-b"><input type="button" onclick="addItem()"
-           value="Add Item"></div>
-       </div>
-   </div>
-	 <div id="CurrentShoppingList" class="ui-content">
-	 	<div class="ui-grid-a">
-			<div class="ui-block-a"><div class="ui-bar ui-bar-b" style="height:20px">
-        <center><h3>Name</h3></center></div></div>
-			<div class="ui-block-b"><div class="ui-bar ui-bar-b" style="height:20px">
-        <center><h3>Quantity</h3></center></div></div>
-		</div>
-	 </div>
-	 <script>
-	 function goBack(){
-		 $.mobile.pageContainer.pagecontainer("change", "CreateShoppingList.html", null);
-	 }
+      value="1" min="1" max="20"/> </center>
+      </div>
+      <div id="CurrentShoppingList" class="ui-content">
+        <div class="ui-grid-a">
+          <div class="ui-block-a"><div class="ui-bar ui-bar-b" style="height:20px">
+            <center><h3>Name</h3></center></div></div>
+            <div class="ui-block-b"><div class="ui-bar ui-bar-b" style="height:20px">
+              <center><h3>Quantity</h3></center></div></div>
+            </div>
+          </div>
+          <script>
+          //when document loads call getChosenItem function which will retrieve
+          //the chosen item from the local storage
+          $().ready(function(){
+            getChosenItem();
+          });
 
-		$().ready( function(){
-		 getChosenItem();
-	 });
-
-		$().ready( function(){
-		 for (let item of CurrentShoppingListArray) {
-		 	$("#CurrentShoppingList > .ui-grid-a").append("" +
-			"<div class='ui-block-a'><div class='ui-bar ui-bar-a'style='padding: 0px'><center><p><b>"
-      + item.name + "</b></p></center></div></div>" +
-			"<div class='ui-block-b'><div class='ui-bar ui-bar-a'style='padding: 0px'><center><p>"
-      + item.quantity + "</p></center></div></div>");
-		 }
-	 });
-	 </script>
-  </div>
-</body>
+          //when document loads add all the items that were chosen from the user
+          //so that s/he can view what s/he is buying.
+          $().ready(function(){
+            for (let item of CurrentShoppingListArray) {
+              $("#CurrentShoppingList > .ui-grid-a").append("" +
+              "<div class='ui-block-a'><div class='ui-bar ui-bar-a'style='padding: 0px'><center><p><b>"
+              + item.name + "</b></p></center></div></div>" +
+              "<div class='ui-block-b'><div class='ui-bar ui-bar-a'style='padding: 0px'><center><p>"
+              + item.quantity + "</p></center></div></div>");
+            }
+          });
+          </script>
+        </div>
+      </body>

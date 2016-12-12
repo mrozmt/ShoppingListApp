@@ -1,43 +1,84 @@
 <body>
   <div data-role="page" id="ShoppingListItemsPage">
-    <div data-role="main" class="ui-content">
-      <center><h1 id="ShoppingListItemsHeading"></h1></center>
-      <div class="ui-grid-a">
-        <div class="ui-block-a">
-          <a href="#popupDialog" data-rel="popup" data-position-to="window" data-transition="pop" class="ui-btn ui-corner-all ui-shadow ui-btn-a">Back</a>
-          <div data-role="popup" id="popupDialog" data-dismissible="false" style="max-width:400px;">
-            <div data-role="header" data-theme="a">
-              <h1>Back</h1>
+    <div data-role="header">
+      <a href="#popupDialog" data-rel="popup" data-position-to="window" data-transition="pop" class="ui-btn ui-corner-all  ui-btn-a">Ready?</a>
+      <div data-role="popup" id="popupDialog" data-dismissible="true" style="max-width:400px;">
+        <a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right" data-rel="back">Close</a>
+        <div data-role="header" data-theme="a">
+          <h1>Ready?</h1>
+        </div>
+        <div role="main" class="ui-content">
+          <center>
+            <h4 class="ui-title">Keep or Remove List?</h4>
+            <p>Do you want to keep this list to use another time or remove it?</p>
+          </center>
+          <div class="ui-grid-a">
+            <div class="ui-block-a">
+              <a href="ShoppingLists.html" class="ui-btn ui-corner-all" onclick="keepList()" data-transition="slide">Keep</a>
             </div>
-            <div class="ui-content">
-              <h3 class="ui-title">Are you sure you want to go back?</h3>
-              <a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline" data-rel="back">Cancel</a>
-              <a href="ShoppingLists.html" class="ui-btn ui-corner-all ui-shadow ui-btn-inline" data-transition="flow">Back</a>
+            <div class="ui-block-b">
+              <a href="ShoppingLists.html" class="ui-btn ui-corner-all" onclick="removeList()" data-transition="slide">Remove</a>
             </div>
           </div>
         </div>
-        <div class="ui-block-b">
-          <a href="boughtItems.html" class="ui-btn">Bought Items</a>
-        </div>
       </div>
+      <h1 id="ShoppingListItemsHeading"></h1>
+      <a href="boughtItems.html" class="ui-btn" data-transition="slide">Bought Items</a>
+    </div>
+    <div data-role="main" class="ui-content">
     </div>
     <ul id="ShoppingListItems" data-role="listview" data-inset="true">
     </ul>
     <script>
+    /*
+    * when document loads retrieve shopping list items
+    */
     $().ready( function(){
       retrieveShoppingListItems();
     });
 
     //retrieve list that was clicked on from the listview and store it in a variable
-    $("li").on('click', function(evt) {
+    //call the boughtItem function to move item from shopping list to bought list
+    $("#ShoppingListItems > li").on('click', function(evt) {
+      var temp = $(this).text();
+      $(this).remove();
       var listName = $("#ShoppingListItemsHeading").text() + " Bought Items";
-      var temp = evt.target.text;
       var BoughtItem = temp.split("  ");
-      localStorage.setItem("chosenList", $("#ShoppingListItemsHeading").text());
-      localStorage.setItem("boughtListName", listName);
-      console.log("here");
       boughtItem(BoughtItem, listName);
+      if($("#ShoppingListItems li").length == 0){
+        $("#ShoppingListItems").append("<center><li style='color:red'>There are currently" +
+        " no items to buy.<li></center>");
+      }
     });
+
+    //this function removes the list from local storage
+    function removeList(){
+      var tempListName = localStorage.getItem("chosenList");
+      var tempListNames = JSON.parse(localStorage.getItem("ShoppingListsArrayNames"));
+      localStorage.removeItem(tempListName);
+      localStorage.removeItem(tempListName + " Bought Items");
+      for(var i = 0; i < tempListNames.length; i++){
+        if(tempListNames[i] == tempListName){
+          tempListNames.splice(i, 1);
+        }
+      }
+      localStorage.setItem("ShoppingListsArrayNames", JSON.stringify(tempListNames));
+    }
+
+    //this function saves the shopping list for another time, it removes every
+    //item from the bought list and adds it back to the shopping list
+    function keepList(){
+      var tempListName = localStorage.getItem("chosenList");
+      var tempBoughtListName = localStorage.getItem("chosenBoughtList");
+      var tempShoppingList = JSON.parse(localStorage.getItem(tempListName));
+      var tempBoughtList = JSON.parse(localStorage.getItem(tempBoughtListName));
+      for(var i = 0; i < tempBoughtList.length; i++){
+        var tempItem = tempBoughtList[i];
+        tempShoppingList.push(tempItem);
+      }
+      localStorage.setItem(tempListName, JSON.stringify(tempShoppingList));
+      localStorage.removeItem(tempBoughtListName);
+    }
     </script>
   </div>
 </body>
