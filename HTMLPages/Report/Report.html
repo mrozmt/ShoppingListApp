@@ -1,0 +1,40 @@
+<body>
+  <div data-role="page" id="ReportPage">
+    <div data-role="header" data-position="fixed">
+      <a href="../../MainMenu.html" class="ui-btn ui-corner-all ui-shadow"
+      data-transition="slide">Back</a>
+      <h1>Report</h1>
+    </div>
+    <div data-role="main" class="ui-content" id="ReportPageMain">
+      <table data-role="table" id="tableBody" data-mode="flow" class="ui-responsive">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Item</th>
+            <th>Quantity</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+    <script>
+    /*
+    * when document loads, the displayShoppingLists is called to display
+    * all the shopping lists found in the local storage
+    */
+    $().ready( function(){
+      var ReportArray = JSON.parse(localStorage.getItem("ReportArray"));
+      if(ReportArray.length > 0){
+        for(var i=0; i < ReportArray.length; i++){
+          $("#tableBody").append("<tr><th>" + ReportArray[i].date + "</th><td>"
+          + ReportArray[i].name + "</td><td>" + ReportArray[i].quantity + "</td></tr>");
+        }
+      }
+      else{
+        $("#ReportPageMain").append("<center><p style='color:red'>There are no bought items yet.</center>")
+      }
+    });
+    </script>
+  </div>
+</body>

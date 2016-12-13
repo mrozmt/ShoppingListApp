@@ -13,6 +13,7 @@
 //load items from local storage
 if(isLocalStorageEmpty() == true){
 	initializeListItems();
+	localStorage["ReportArray"] = JSON.stringify(ReportArray);
 }
 </script>
 <body>
@@ -22,8 +23,8 @@ if(isLocalStorageEmpty() == true){
       <ul data-role="listview" data-inset="true">
         <li><a href="HTMLPages/CreateNewList/CreateShoppingList.html" data-transition="slide">Create a Shopping List</a></li>
         <li><a href="HTMLPages/ShowShoppingLists/ShoppingLists.html" data-transition="slide">Shopping Lists</a></li>
-        <li><a href="#" data-transition="slide">Report</a></li>
-        <li><a href="#" data-transition="slide">Help</a></li>
+        <li><a href="HTMLPages/Report/Report.html" data-transition="slide">Report</a></li>
+        <li><a href="HTMLPages/Help/Help.html" data-transition="slide">Help</a></li>
       </ul>
     </div>
   </div>

@@ -1,7 +1,15 @@
 var chosenItems = "";
 var CurrentShoppingListArray = [];
 var ShoppingListName = "";
+var ReportArray = [];
+
 function Item(name, quantity) {
+  this.name = name;
+  this.quantity = quantity;
+}
+
+function ReportItem(date, name, quantity){
+  this.date = date;
   this.name = name;
   this.quantity = quantity;
 }
@@ -15,6 +23,12 @@ function Item(name, quantity) {
 function addItem(){
   var itemName = $("#spinlabel").html();
   var quantity = $("#spin").val();
+  for(var i = 0; i < CurrentShoppingListArray.length; i++){
+    if(itemName == CurrentShoppingListArray[i].name){
+      CurrentShoppingListArray[i].quantity = parseInt(CurrentShoppingListArray[i].quantity) + parseInt(quantity);
+      return;
+    }
+  }
   var tempItem = new Item(itemName, quantity);
   CurrentShoppingListArray.push(tempItem);
 }
@@ -53,13 +67,37 @@ function loadItemsToList() {
 * Save the user's list to the localStorage and change page to main menu.
 */
 function saveList(){
-  var listName = $("#SaveListName").val();
-  localStorage[$("#SaveListName").val()] = JSON.stringify(CurrentShoppingListArray);
-  addNewListName(listName);
+  if(CurrentShoppingListArray.length > 0){
+    var listName = $("#SaveListName").val();
+    var arrayListNames = JSON.parse(localStorage.getItem("ShoppingListsArrayNames"));
+    var sameName = new Boolean(false);
+    if(arrayListNames != null){
+      if (arrayListNames.length > 0){
+        for(var i = 0; i < arrayListNames.length; i++){
+          if(listName == arrayListNames[i]){
+            sameName = true;
+          }
+        }
+      }
+    }
+    if(listName.length != 0 && sameName == false){
+      localStorage[$("#SaveListName").val()] = JSON.stringify(CurrentShoppingListArray);
+      addNewListName(listName);
 
-  //empty CurrentShoppingListArray
-  CurrentShoppingListArray = [];
-  $.mobile.pageContainer.pagecontainer("change", "../../MainMenu.html", null);
+      //empty CurrentShoppingListArray
+      CurrentShoppingListArray = [];
+      $.mobile.pageContainer.pagecontainer("change", "../../MainMenu.html", {transition: 'slide'});
+    }
+    else if(sameName == true){
+      $("#ListValidator").text("Name already exists. Choose another one.");
+    }
+    else{
+      $("#ListValidator").text("Please enter a name for the list.");
+    }
+  }
+  else{
+    $("#ListValidator").text("There are currently no items in the list.");
+  }
 }
 
 //add new list name to array and save to localStorage
@@ -129,10 +167,16 @@ function initializeListItems(){
 */
 function displayShoppingLists(){
   var ShoppingLists = JSON.parse(localStorage.getItem("ShoppingListsArrayNames"));
-  if(ShoppingLists.length > 0){
-    for (let item of ShoppingLists) {
-      $("#ShoppingLists").append("<li><a href='ShoppingListItems.html' data-transition='slide'>"
-      + item + "</a></li>");
+  if(ShoppingLists != null){
+    if(ShoppingLists.length > 0){
+      for (let item of ShoppingLists) {
+        $("#ShoppingLists").append("<li><a href='ShoppingListItems.html' data-transition='slide'>"
+        + item + "</a></li>");
+      }
+    }
+    else {
+      $( "#ShoppingLists" ).append("<center><li style='color:red'>There are currently" +
+      " no shopping lists.<li></center>");
     }
   }
   else {

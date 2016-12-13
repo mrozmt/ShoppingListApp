@@ -1,9 +1,11 @@
 <body>
   <div data-role="page" id="ShoppingListItemsPage">
-    <div data-role="header">
-      <a href="#popupDialog" data-rel="popup" data-position-to="window" data-transition="pop" class="ui-btn ui-corner-all  ui-btn-a">Ready?</a>
+    <div data-role="header" data-position="fixed">
+      <a href="#popupDialog" data-rel="popup" data-position-to="window"
+        data-transition="pop" class="ui-btn ui-corner-all  ui-btn-a">Ready?</a>
       <div data-role="popup" id="popupDialog" data-dismissible="true" style="max-width:400px;">
-        <a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right" data-rel="back">Close</a>
+        <a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right"
+          data-rel="back">Close</a>
         <div data-role="header" data-theme="a">
           <h1>Ready?</h1>
         </div>
@@ -11,13 +13,17 @@
           <center>
             <h4 class="ui-title">Keep or Remove List?</h4>
             <p>Do you want to keep this list to use another time or remove it?</p>
+            <hr>
+            <p>The items that are in the bought list will be added to the report page.</p>
           </center>
           <div class="ui-grid-a">
             <div class="ui-block-a">
-              <a href="ShoppingLists.html" class="ui-btn ui-corner-all" onclick="keepList()" data-transition="slide">Keep</a>
+              <a href="ShoppingLists.html" class="ui-btn ui-corner-all"
+                onclick="keepList()" data-transition="slide">Keep</a>
             </div>
             <div class="ui-block-b">
-              <a href="ShoppingLists.html" class="ui-btn ui-corner-all" onclick="removeList()" data-transition="slide">Remove</a>
+              <a href="ShoppingLists.html" class="ui-btn ui-corner-all"
+                onclick="removeList()" data-transition="slide">Remove</a>
             </div>
           </div>
         </div>
@@ -26,9 +32,9 @@
       <a href="boughtItems.html" class="ui-btn" data-transition="slide">Bought Items</a>
     </div>
     <div data-role="main" class="ui-content">
+      <ul id="ShoppingListItems" data-role="listview" data-inset="true">
+      </ul>
     </div>
-    <ul id="ShoppingListItems" data-role="listview" data-inset="true">
-    </ul>
     <script>
     /*
     * when document loads retrieve shopping list items
@@ -53,6 +59,9 @@
 
     //this function removes the list from local storage
     function removeList(){
+      var tempBoughtListName = localStorage.getItem("chosenBoughtList");
+      var tempBoughtList = JSON.parse(localStorage.getItem(tempBoughtListName));
+      saveToReport(tempBoughtList);
       var tempListName = localStorage.getItem("chosenList");
       var tempListNames = JSON.parse(localStorage.getItem("ShoppingListsArrayNames"));
       localStorage.removeItem(tempListName);
@@ -72,13 +81,29 @@
       var tempBoughtListName = localStorage.getItem("chosenBoughtList");
       var tempShoppingList = JSON.parse(localStorage.getItem(tempListName));
       var tempBoughtList = JSON.parse(localStorage.getItem(tempBoughtListName));
-      for(var i = 0; i < tempBoughtList.length; i++){
-        var tempItem = tempBoughtList[i];
-        tempShoppingList.push(tempItem);
+      if(tempBoughtList != null){
+        saveToReport(tempBoughtList);
+        for(var i = 0; i < tempBoughtList.length; i++){
+          var tempItem = tempBoughtList[i];
+          tempShoppingList.push(tempItem);
+        }
+        localStorage.setItem(tempListName, JSON.stringify(tempShoppingList));
+        localStorage.removeItem(tempBoughtListName);
       }
-      localStorage.setItem(tempListName, JSON.stringify(tempShoppingList));
-      localStorage.removeItem(tempBoughtListName);
     }
-    </script>
-  </div>
-</body>
+
+    function saveToReport(boughtList){
+      if(boughtList != null){
+        var tempReportArray = JSON.parse(localStorage.getItem("ReportArray"));
+        var todaysDate = new Date(Date.now()).toLocaleString();
+        for(var i = 0; i < boughtList.length; i++){
+          var tempReportItem = new ReportItem(todaysDate, boughtList[i].name,
+            boughtList[i].quantity);
+            tempReportArray.push(tempReportItem);
+          }
+          localStorage.setItem("ReportArray", JSON.stringify(tempReportArray));
+        }
+      }
+      </script>
+    </div>
+  </body>
